@@ -1,0 +1,38 @@
+{
+    "name": "api-example",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "directories": {
+        "doc": "docs",
+        "lib": "lib",
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "clear": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf photos/ && exit 1",
+        "start": "node server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/paulus1111/api-example.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/paulus1111/api-example/issues"
+    },
+    "homepage": "https://github.com/paulus1111/api-example#readme",
+    "dependencies": {
+        "axios": "^0.27.2",
+        "bcrypt": "^5.0.1",
+        "cors": "^2.8.5",
+        "express": "^4.17.3",
+        "express-validator": "^6.14.1",
+        "mssql": "^8.1.1",
+        "node-raspistill": "^2.0.1",
+        "nodemon": "^2.0.16",
+        "onoff": "^6.0.3",
+        "ora": "^5.4.1"
+    }
+}
