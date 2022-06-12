@@ -6,6 +6,8 @@ const app = express();
 
 const deviceRoutes = require('./routes/device_routes');
 const calenderRoutes = require('./routes/calender_routes');
+const buildingRoutes = require('./routes/building_routes');
+const roomRoutes = require('./routes/room_routes');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -18,5 +20,7 @@ app.use((error, req, res, next) => {
 
 app.use('/api/device', deviceRoutes);
 app.use('/api/calender', calenderRoutes);
+app.use('/api/building', buildingRoutes);
+app.use('/api/room', roomRoutes);
 
 module.exports = app;
