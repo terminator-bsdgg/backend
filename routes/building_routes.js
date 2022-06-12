@@ -10,26 +10,22 @@ router.use((req, res, next) => {
     next();
 });
 
-router.post('/list', body('token').isString(), (req, res) => {
+router.get('/list', (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    tokenUtils.isTokenValid(req.body['token']).then((user) => {
-        if (!user.valid) return res.status(400).json({ error: 'Invalid token' });
-
-        database.sql.connect(database.sqlConfig).then((pool) => {
-            pool.query('SELECT * FROM [Terminator].[dbo].[buildings]')
-                .then((result) => {
-                    return res.status(200).json(result.recordset);
-                })
-                .catch((selectError) => {
-                    eventUtils.addEvent('error', 'Error while reading Buildings from database');
-                    return res.status(400).json({ error: 'data_error_reading_buildings' });
-                });
-        });
+    database.sql.connect(database.sqlConfig).then((pool) => {
+        pool.query('SELECT * FROM [Terminator].[dbo].[buildings]')
+            .then((result) => {
+                return res.status(200).json(result.recordset);
+            })
+            .catch((selectError) => {
+                eventUtils.addEvent('error', 'Error while reading Buildings from database');
+                return res.status(400).json({ error: 'data_error_reading_buildings' });
+            });
     });
 });
 

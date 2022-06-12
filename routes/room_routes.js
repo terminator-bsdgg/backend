@@ -10,37 +10,33 @@ router.use((req, res, next) => {
     next();
 });
 
-router.post('/list', body('token').isString(), body('building_id').optional().isNumeric(), (req, res) => {
+router.post('/list', body('building_id').optional().isNumeric(), (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    tokenUtils.isTokenValid(req.body['token']).then((user) => {
-        if (!user.valid) return res.status(400).json({ error: 'Invalid token' });
-
-        database.sql.connect(database.sqlConfig).then((pool) => {
-            if (req.body['building']) {
-                pool.query(`SELECT * FROM [Terminator].[dbo].[rooms] WHERE buildingid = ${req.body['building_id']}`)
-                    .then((result) => {
-                        return res.status(200).json(result.recordset);
-                    })
-                    .catch((selectError) => {
-                        eventUtils.addEvent('error', 'Error while reading Rooms from database');
-                        return res.status(400).json({ error: 'data_error_reading_rooms' });
-                    });
-            } else {
-                pool.query('SELECT * FROM [Terminator].[dbo].[rooms]')
-                    .then((result) => {
-                        return res.status(200).json(result.recordset);
-                    })
-                    .catch((selectError) => {
-                        eventUtils.addEvent('error', 'Error while reading Rooms from database');
-                        return res.status(400).json({ error: 'data_error_reading_rooms' });
-                    });
-            }
-        });
+    database.sql.connect(database.sqlConfig).then((pool) => {
+        if (req.body['building']) {
+            pool.query(`SELECT * FROM [Terminator].[dbo].[rooms] WHERE buildingid = ${req.body['building_id']}`)
+                .then((result) => {
+                    return res.status(200).json(result.recordset);
+                })
+                .catch((selectError) => {
+                    eventUtils.addEvent('error', 'Error while reading Rooms from database');
+                    return res.status(400).json({ error: 'data_error_reading_rooms' });
+                });
+        } else {
+            pool.query('SELECT * FROM [Terminator].[dbo].[rooms]')
+                .then((result) => {
+                    return res.status(200).json(result.recordset);
+                })
+                .catch((selectError) => {
+                    eventUtils.addEvent('error', 'Error while reading Rooms from database');
+                    return res.status(400).json({ error: 'data_error_reading_rooms' });
+                });
+        }
     });
 });
 
