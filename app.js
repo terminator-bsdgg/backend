@@ -4,9 +4,8 @@ const cors = require('cors');
 
 const app = express();
 
-const userRoutes = require('./routes/user_routes');
 const deviceRoutes = require('./routes/device_routes');
-const timeRoutes = require('./routes/time_routes');
+const calenderRoutes = require('./routes/calender_routes');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -17,8 +16,7 @@ app.use((error, req, res, next) => {
     } else next();
 });
 
-app.use('/api/user', userRoutes);
 app.use('/api/device', deviceRoutes);
-app.use('/api/time', timeRoutes);
+app.use('/api/calender', calenderRoutes);
 
 module.exports = app;
