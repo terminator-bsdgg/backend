@@ -35,7 +35,7 @@ router.post('/logs', body('draw').optional().isNumeric(), body('type').optional(
     }
 
     database.sql.connect(database.sqlConfig).then((pool) => {
-        pool.query('SELECT * FROM [HydroPoc].[dbo].[events] ORDER BY id DESC')
+        pool.query('SELECT * FROM [Terminator].[dbo].[events] ORDER BY id DESC')
             .then((result) => {
                 const logs = { draw: req.body['draw'] != undefined ? req.body['draw'] : 1, recordsTotal: result.recordset.length, recordsFiltered: 0, data: [] };
 
