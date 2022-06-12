@@ -4,7 +4,6 @@ const cors = require('cors');
 
 const app = express();
 
-const userRoutes = require('./routes/user_routes');
 const deviceRoutes = require('./routes/device_routes');
 const calenderRoutes = require('./routes/calender_routes');
 
@@ -17,7 +16,6 @@ app.use((error, req, res, next) => {
     } else next();
 });
 
-app.use('/api/user', userRoutes);
 app.use('/api/device', deviceRoutes);
 app.use('/api/calender', calenderRoutes);
 
