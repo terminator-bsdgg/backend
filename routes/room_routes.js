@@ -10,7 +10,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.post('/list', body('token').isString(), body('building').optional().isNumeric(), (req, res) => {
+router.post('/list', body('token').isString(), body('building_id').optional().isNumeric(), (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -22,7 +22,7 @@ router.post('/list', body('token').isString(), body('building').optional().isNum
 
         database.sql.connect(database.sqlConfig).then((pool) => {
             if (req.body['building']) {
-                pool.query(`SELECT * FROM [Terminator].[dbo].[rooms] WHERE buildingid = ${req.body['building']}`)
+                pool.query(`SELECT * FROM [Terminator].[dbo].[rooms] WHERE buildingid = ${req.body['building_id']}`)
                     .then((result) => {
                         return res.status(200).json(result.recordset);
                     })
