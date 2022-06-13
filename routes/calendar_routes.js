@@ -136,6 +136,47 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
     });
 });
 
+router.post('/list/pending', body('organisatorId').optional().isString(), (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    database.sql.connect(database.sqlConfig).then((pool) => {
+        const data = [];
+
+        pool.query(req.body['organisatorId'] ? "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [organisatorId] = '" + req.body['organisatorId'] + "' AND [accepted] = 0 AND [declinedReason] = ''" : "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [accepted] = 0 AND [declinedReason] = ''")
+            .then((result) => {
+                result.recordset.forEach((row) => {
+                    data.push({
+                        id: row.id,
+                        start: new Date(parseInt(row.startTime)).toISOString(),
+                        end: new Date(parseInt(row.endTime)).toISOString(),
+                        title: row.title,
+                        classNames: ['cursor-pointer'],
+                        extendedProps: {
+                            organiser: row.organisator,
+                            organisatorId: row.organisatorId,
+                            start: row.startTime,
+                            end: row.endTime,
+                            roomid: row.roomid,
+                            accepted: row.accepted,
+                            declinedReason: row.declinedReason,
+                        },
+                    });
+                });
+
+                return res.status(200).json(data);
+            })
+            .catch((selectError) => {
+                console.log(selectError);
+                eventUtils.addEvent('error', 'Error while selecting events', selectError);
+                return res.status(500).json({ error: 'Error while selecting from database' });
+            });
+    });
+});
+
 router.post('/add', body('token').isString(), body('title').isString(), body('start').isInt(), body('end').isInt(), body('room_id').isNumeric(), (req, res) => {
     const errors = validationResult(req);
 
