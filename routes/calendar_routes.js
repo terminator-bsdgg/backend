@@ -27,9 +27,9 @@ router.post('/list', body('room_id').optional().isNumeric(), (req, res) => {
                         start: new Date(parseInt(row.startTime)).toISOString(),
                         end: new Date(parseInt(row.endTime)).toISOString(),
                         title: row.title,
-                        classNames: [],
+                        classNames: ['cursor-pointer'],
                         extendedProps: {
-                            organisator: row.organisator,
+                            organiser: row.organisator,
                             start: row.startTime,
                             end: row.endTime,
                             roomid: row.roomid,
