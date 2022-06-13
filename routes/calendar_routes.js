@@ -21,7 +21,7 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
         const data = [];
 
         if (req.body['userid'] && req.body['room_id']) {
-            pool.query('SELECT * FROM [calendar].[calendar] WHERE [userid] = @userid AND [room_id] = @room_id')
+            pool.query('SELECT * FROM [Terminator].[dbo].[calendar] WHERE [userid] = @userid AND [room_id] = @room_id')
                 .then((result) => {
                     result.recordset.forEach((row) => {
                         data.push({
@@ -49,7 +49,7 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
                     return res.status(500).json({ error: 'Error while selecting from database' });
                 });
         } else if (req.body['userid']) {
-            pool.query('SELECT * FROM [calendar].[calendar_events] WHERE [userid] = @userid')
+            pool.query('SELECT * FROM [Terminator].[dbo].[calendar] WHERE [userid] = @userid')
                 .then((result) => {
                     result.recordset.forEach((row) => {
                         data.push({
@@ -77,7 +77,7 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
                     return res.status(500).json({ error: 'Error while selecting from database' });
                 });
         } else if (req.body['room_id']) {
-            pool.query('SELECT * FROM [calendar].[calendar_events] WHERE [room_id] = @room_id')
+            pool.query('SELECT * FROM [Terminator].[dbo].[calendar] WHERE [room_id] = @room_id')
                 .then((result) => {
                     result.recordset.forEach((row) => {
                         data.push({
@@ -105,7 +105,7 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
                     return res.status(500).json({ error: 'Error while selecting from database' });
                 });
         } else {
-            pool.query('SELECT * FROM [calendar].[calendar_events]')
+            pool.query('SELECT * FROM [Terminator].[dbo].[calendar]')
                 .then((result) => {
                     result.recordset.forEach((row) => {
                         data.push({
