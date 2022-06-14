@@ -10,5 +10,5 @@ CREATE TABLE [dbo].[calendar] (
     organisatorId VARCHAR(255) NOT NULL,
     accepted tinyint NOT NULL DEFAULT 0,
     declinedReason VARCHAR(MAX) NOT NULL DEFAULT '',
-    editorId VARCHAR(255) NOT NULL,
+    editorId VARCHAR(255) NOT NULL DEFAULT '',
 );

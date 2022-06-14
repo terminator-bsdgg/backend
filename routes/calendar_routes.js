@@ -168,13 +168,12 @@ router.post('/add', body('token').isString(), body('title').isString(), body('st
 
         database.sql.connect(database.sqlConfig).then((pool) => {
             pool.query(`SELECT * FROM [Terminator].[dbo].[calendar] WHERE roomid = ${req.body['room_id']} AND startTime = ${req.body['start']} AND endTime = ${req.body['end']}`)
-
                 .then((result) => {
                     if (result.recordset.length > 0) {
                         return res.status(400).json({ error: 'data_error_calendar_already_exists' });
                     }
 
-                    pool.query(`INSERT INTO [Terminator].[dbo].[calendar] (title, startTime, endTime, organisator, roomid) VALUES ('${req.body['title']}', ${req.body['start']}, ${req.body['end']}, '${user.clientInformations.username}', ${req.body['room_id']})`)
+                    pool.query(`INSERT INTO [Terminator].[dbo].[calendar] (title, startTime, endTime, organisator, organisatorId, roomid) VALUES ('${req.body['title']}', ${req.body['start']}, ${req.body['end']}, '${user.clientInformations.username}', '${user.clientInformations.id}', ${req.body['room_id']})`)
                         .then((insertResult) => {
                             eventUtils.addEvent('info', `${user.clientInformations.username} added a new event to the calendar`);
                             return res.status(200).json({ success: 'data_success_calendar_added' });
