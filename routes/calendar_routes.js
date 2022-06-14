@@ -160,6 +160,32 @@ router.post('/list/pending', body('organisatorId').optional().isString(), (req, 
     });
 });
 
+router.post('/list/all', body('token').isString(), body('organisatorId').optional().isString(), (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    tokenUtils.isTokenValid(req.body['token'], (isValid) => {
+        if (!isValid) {
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+
+        database.sql.connect(database.sqlConfig).then((pool) => {
+            pool.query(req.body['organisatorId'] ? "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [organisatorId] = '" + req.body['organisatorId'] + "' AND [accepted] = 0 AND [declinedReason] = ''" : "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [accepted] = 0 AND [declinedReason] = ''")
+                .then((result) => {
+                    return res.status(200).json(result.recordset);
+                })
+                .catch((selectError) => {
+                    console.log(selectError);
+                    eventUtils.addEvent('error', 'Error while selecting events', selectError);
+                    return res.status(500).json({ error: 'Error while selecting from database' });
+                });
+        });
+    });
+});
+
 router.post('/add', body('token').isString(), body('title').isString(), body('start').isInt(), body('end').isInt(), body('room_id').isNumeric(), body('showName').optional().isBoolean(), (req, res) => {
     const errors = validationResult(req);
 
