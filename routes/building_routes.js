@@ -64,26 +64,33 @@ router.post('/delete', body('token').isString(), body('id').isNumeric(), (req, r
         if (!user.valid) return res.status(400).json({ error: 'Invalid token' });
 
         database.sql.connect(database.sqlConfig).then((pool) => {
-            pool.query(`DELETE FROM [Terminator].[dbo].[rooms] WHERE buildingid = ${req.body['id']}`)
-                .then((resultRooms) => {
-                    pool.query(`DELETE FROM [Terminator].[dbo].[buildings] WHERE id = ${req.body['id']}`)
-                        .then((result) => {
-                            if (result.rowsAffected > 0) {
-                                eventUtils.addEvent('success', 'User ' + user.clientInformations.username + ' deleted building with id ' + req.body['id'] + ' and ' + resultRooms.rowsAffected + ' rooms');
-                                return res.status(200).json({ success: true });
-                            } else {
-                                eventUtils.addEvent('error', 'User ' + user.clientInformations.username + ' tried to delete building with id ' + req.body['id'] + ' but it does not exist');
-                                return res.status(400).json({ error: 'invalid_room_id' });
-                            }
+            pool.query(`DELETE FROM [Terminator].[dbo].[calendar] WHERE roomid = ${req.body['id']}`)
+                .then((resultDelete) => {
+                    pool.query(`DELETE FROM [Terminator].[dbo].[rooms] WHERE buildingid = ${req.body['id']}`)
+                        .then((resultRooms) => {
+                            pool.query(`DELETE FROM [Terminator].[dbo].[buildings] WHERE id = ${req.body['id']}`)
+                                .then((result) => {
+                                    if (result.rowsAffected > 0) {
+                                        eventUtils.addEvent('success', 'User ' + user.clientInformations.username + ' deleted building with id ' + req.body['id'] + ' and ' + resultRooms.rowsAffected + ' rooms');
+                                        return res.status(200).json({ success: true });
+                                    } else {
+                                        eventUtils.addEvent('error', 'User ' + user.clientInformations.username + ' tried to delete building with id ' + req.body['id'] + ' but it does not exist');
+                                        return res.status(400).json({ error: 'invalid_room_id' });
+                                    }
+                                })
+                                .catch((deleteError) => {
+                                    eventUtils.addEvent('error', 'Error while deleting Buildings from database');
+                                    return res.status(400).json({ error: 'data_error_deleting_building' });
+                                });
                         })
-                        .catch((deleteError) => {
-                            eventUtils.addEvent('error', 'Error while deleting Buildings from database');
-                            return res.status(400).json({ error: 'data_error_deleting_building' });
+                        .catch((deleteErrorRooms) => {
+                            eventUtils.addEvent('error', 'Error while deleting rooms. This operation was started by user ' + user.clientInformations.username);
+                            return res.status(400).json({ error: 'invalid_room_id_rooms' });
                         });
                 })
-                .catch((deleteErrorRooms) => {
-                    eventUtils.addEvent('error', 'Error while deleting rooms. This operation was started by user ' + user.clientInformations.username);
-                    return res.status(400).json({ error: 'invalid_room_id_rooms' });
+                .catch((deleteError) => {
+                    eventUtils.addEvent('error', 'Error while deleting room. This operation was started by user ' + user.clientInformations.username);
+                    return res.status(400).json({ error: 'invalid_room_id' });
                 });
         });
     });

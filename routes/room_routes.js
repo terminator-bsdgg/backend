@@ -88,10 +88,17 @@ router.post('/delete', body('token').isString(), body('id').isNumeric(), (req, r
                 .then((result) => {
                     if (result.rowsAffected <= 0) return res.status(400).json({ error: 'invalid_room_id' });
 
-                    pool.query(`DELETE FROM [Terminator].[dbo].[rooms] WHERE id = ${req.body['id']}`)
+                    pool.query(`DELETE FROM [Terminator].[dbo].[calendar] WHERE roomid = ${req.body['id']}`)
                         .then((resultDelete) => {
-                            eventUtils.addEvent('success', 'User ' + user.clientInformations.username + ' deleted room with id ' + req.body['id']);
-                            return res.status(200).json({ success: true });
+                            pool.query(`DELETE FROM [Terminator].[dbo].[rooms] WHERE id = ${req.body['id']}`)
+                                .then((resultDelete) => {
+                                    eventUtils.addEvent('success', 'User ' + user.clientInformations.username + ' deleted room with id ' + req.body['id']);
+                                    return res.status(200).json({ success: true });
+                                })
+                                .catch((deleteError) => {
+                                    eventUtils.addEvent('error', 'Error while deleting room. This operation was started by user ' + user.clientInformations.username);
+                                    return res.status(400).json({ error: 'invalid_room_id' });
+                                });
                         })
                         .catch((deleteError) => {
                             eventUtils.addEvent('error', 'Error while deleting room. This operation was started by user ' + user.clientInformations.username);
