@@ -167,10 +167,8 @@ router.post('/list/all', body('token').isString(), body('organisatorId').optiona
         return res.status(400).json({ errors: errors.array() });
     }
 
-    tokenUtils.isTokenValid(req.body['token'], (isValid) => {
-        if (!isValid) {
-            return res.status(401).json({ error: 'Invalid token' });
-        }
+    tokenUtils.isTokenValid(req.body['token']).then((user) => {
+        if (!user.valid) return res.status(400).json({ error: 'Invalid token' });
 
         database.sql.connect(database.sqlConfig).then((pool) => {
             pool.query(req.body['organisatorId'] ? "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [organisatorId] = '" + req.body['organisatorId'] + "' AND [accepted] = 0 AND [declinedReason] = ''" : "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [accepted] = 0 AND [declinedReason] = ''")
