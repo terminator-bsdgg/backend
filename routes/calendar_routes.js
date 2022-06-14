@@ -156,7 +156,7 @@ router.post('/list/pending', body('organisatorId').optional().isString(), (req, 
     });
 });
 
-router.post('/add', body('token').isString(), body('title').isString(), body('start').isInt(), body('end').isInt(), body('room_id').isNumeric(), (req, res) => {
+router.post('/add', body('token').isString(), body('title').isString(), body('start').isInt(), body('end').isInt(), body('room_id').isNumeric(), body('showName').optional().isBoolean(), (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -175,8 +175,19 @@ router.post('/add', body('token').isString(), body('title').isString(), body('st
 
                     pool.query(`INSERT INTO [Terminator].[dbo].[calendar] (title, startTime, endTime, organisator, organisatorId, roomid) VALUES ('${req.body['title']}', ${req.body['start']}, ${req.body['end']}, '${user.clientInformations.username}', '${user.clientInformations.id}', ${req.body['room_id']})`)
                         .then((insertResult) => {
-                            eventUtils.addEvent('info', `${user.clientInformations.username} added a new event to the calendar`);
-                            return res.status(200).json({ success: 'data_success_calendar_added' });
+                            if (req.body['showName']) {
+                                pool.query(`UPDATE [Terminator].[dbo].[calendar] SET showName = ${req.body['showName']} WHERE id = ${insertResult.rowsAffected[0]}`)
+                                    .then((updateResult) => {
+                                        return res.status(200).json({ success: true });
+                                    })
+                                    .catch((updateError) => {
+                                        eventUtils.addEvent('error', 'Error while adding Calendar to database');
+                                        return res.status(400).json({ error: 'data_error_adding_calendar' });
+                                    });
+                            } else {
+                                eventUtils.addEvent('info', `${user.clientInformations.username} added a new event to the calendar`);
+                                return res.status(200).json({ success: 'data_success_calendar_added' });
+                            }
                         })
                         .catch((insertError) => {
                             eventUtils.addEvent('error', 'Error while adding Calendar to database');

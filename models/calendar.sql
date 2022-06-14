@@ -6,6 +6,7 @@ CREATE TABLE [dbo].[calendar] (
     title VARCHAR(MAX) NOT NULL,
     startTime bigint NOT NULL,
     endTime bigint NOT NULL,
+    showName tinyint NOT NULL DEFAULT 1,
     organisator VARCHAR(255) NOT NULL,
     organisatorId VARCHAR(255) NOT NULL,
     accepted tinyint NOT NULL DEFAULT 0,
