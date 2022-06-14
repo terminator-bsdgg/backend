@@ -23,7 +23,27 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
         if (req.body['userid'] && req.body['room_id']) {
             pool.query('SELECT * FROM [Terminator].[dbo].[calendar] WHERE [userid] = @userid AND [room_id] = @room_id')
                 .then((result) => {
-                    return res.status(200).json(result.recordset);
+                    result.recordset.forEach((row) => {
+                        data.push({
+                            id: row.id,
+                            start: new Date(parseInt(row.startTime)).toISOString(),
+                            end: new Date(parseInt(row.endTime)).toISOString(),
+                            title: row.title,
+                            classNames: ['cursor-pointer'],
+                            extendedProps: {
+                                organiser: row.organisator,
+                                organisatorId: row.organisatorId,
+                                start: row.startTime,
+                                end: row.endTime,
+                                show: row.showName,
+                                roomid: row.roomid,
+                                accepted: row.accepted,
+                                declinedReason: row.declinedReason,
+                            },
+                        });
+                    });
+
+                    return res.status(200).json(data);
                 })
                 .catch((selectError) => {
                     eventUtils.addEvent('error', 'Error while selecting events', selectError);
@@ -32,7 +52,27 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
         } else if (req.body['userid']) {
             pool.query('SELECT * FROM [Terminator].[dbo].[calendar] WHERE [userid] = @userid')
                 .then((result) => {
-                    return res.status(200).json(result.recordset);
+                    result.recordset.forEach((row) => {
+                        data.push({
+                            id: row.id,
+                            start: new Date(parseInt(row.startTime)).toISOString(),
+                            end: new Date(parseInt(row.endTime)).toISOString(),
+                            title: row.title,
+                            classNames: ['cursor-pointer'],
+                            extendedProps: {
+                                organiser: row.organisator,
+                                organisatorId: row.organisatorId,
+                                start: row.startTime,
+                                end: row.endTime,
+                                show: row.showName,
+                                roomid: row.roomid,
+                                accepted: row.accepted,
+                                declinedReason: row.declinedReason,
+                            },
+                        });
+                    });
+
+                    return res.status(200).json(data);
                 })
                 .catch((selectError) => {
                     eventUtils.addEvent('error', 'Error while selecting events', selectError);
@@ -41,7 +81,27 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
         } else if (req.body['room_id']) {
             pool.query('SELECT * FROM [Terminator].[dbo].[calendar] WHERE [room_id] = @room_id')
                 .then((result) => {
-                    return res.status(200).json(result.recordset);
+                    result.recordset.forEach((row) => {
+                        data.push({
+                            id: row.id,
+                            start: new Date(parseInt(row.startTime)).toISOString(),
+                            end: new Date(parseInt(row.endTime)).toISOString(),
+                            title: row.title,
+                            classNames: ['cursor-pointer'],
+                            extendedProps: {
+                                organiser: row.organisator,
+                                organisatorId: row.organisatorId,
+                                start: row.startTime,
+                                end: row.endTime,
+                                show: row.showName,
+                                roomid: row.roomid,
+                                accepted: row.accepted,
+                                declinedReason: row.declinedReason,
+                            },
+                        });
+                    });
+
+                    return res.status(200).json(data);
                 })
                 .catch((selectError) => {
                     eventUtils.addEvent('error', 'Error while selecting events', selectError);
@@ -50,7 +110,27 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
         } else {
             pool.query('SELECT * FROM [Terminator].[dbo].[calendar]')
                 .then((result) => {
-                    return res.status(200).json(result.recordset);
+                    result.recordset.forEach((row) => {
+                        data.push({
+                            id: row.id,
+                            start: new Date(parseInt(row.startTime)).toISOString(),
+                            end: new Date(parseInt(row.endTime)).toISOString(),
+                            title: row.title,
+                            classNames: ['cursor-pointer'],
+                            extendedProps: {
+                                organiser: row.organisator,
+                                organisatorId: row.organisatorId,
+                                start: row.startTime,
+                                end: row.endTime,
+                                show: row.showName,
+                                roomid: row.roomid,
+                                accepted: row.accepted,
+                                declinedReason: row.declinedReason,
+                            },
+                        });
+                    });
+
+                    return res.status(200).json(data);
                 })
                 .catch((selectError) => {
                     eventUtils.addEvent('error', 'Error while selecting events', selectError);
