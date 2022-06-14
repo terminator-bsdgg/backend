@@ -144,30 +144,9 @@ router.post('/list/pending', body('organisatorId').optional().isString(), (req, 
     }
 
     database.sql.connect(database.sqlConfig).then((pool) => {
-        const data = [];
-
         pool.query(req.body['organisatorId'] ? "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [organisatorId] = '" + req.body['organisatorId'] + "' AND [accepted] = 0 AND [declinedReason] = ''" : "SELECT * FROM [Terminator].[dbo].[calendar] WHERE [accepted] = 0 AND [declinedReason] = ''")
             .then((result) => {
-                result.recordset.forEach((row) => {
-                    data.push({
-                        id: row.id,
-                        start: new Date(parseInt(row.startTime)).toISOString(),
-                        end: new Date(parseInt(row.endTime)).toISOString(),
-                        title: row.title,
-                        classNames: ['cursor-pointer'],
-                        extendedProps: {
-                            organiser: row.organisator,
-                            organisatorId: row.organisatorId,
-                            start: row.startTime,
-                            end: row.endTime,
-                            roomid: row.roomid,
-                            accepted: row.accepted,
-                            declinedReason: row.declinedReason,
-                        },
-                    });
-                });
-
-                return res.status(200).json(data);
+                return res.status(200).json(result.recordset);
             })
             .catch((selectError) => {
                 console.log(selectError);
