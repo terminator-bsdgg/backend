@@ -1,6 +1,6 @@
 # Terminator Backend
 
-**More documentation you can find in our [documentation repository](https://github.com/terminator-bsdgg/documentation)**
+**Mehr Informationen können unter unserer [Dokumentations Repository](https://github.com/terminator-bsdgg/documentation) gefunden werden.**
 
 Folgende **Programme / Packages** werden benötigt:
 
