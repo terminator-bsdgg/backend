@@ -1,7 +1,7 @@
 {
-    "name": "api-example",
+    "name": "Terminator",
     "version": "1.0.0",
-    "description": "",
+    "description": "The backend for our calendar software",
     "main": "server.js",
     "directories": {
         "doc": "docs",
@@ -10,19 +10,19 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "clear": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf photos/ && exit 1",
+        "clear": "rm -rf node_modules/ && rm -rf package-lock.json && exit 1",
         "start": "node server.js"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/paulus1111/api-example.git"
+        "url": "git+https://github.com/terminator-bsdgg/backend.git"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/paulus1111/api-example/issues"
+        "url": "https://github.com/terminator-bsdgg/backend/issues"
     },
-    "homepage": "https://github.com/paulus1111/api-example#readme",
+    "homepage": "https://github.com/terminator-bsdgg/backend#readme",
     "dependencies": {
         "axios": "^0.27.2",
         "bcrypt": "^5.0.1",
