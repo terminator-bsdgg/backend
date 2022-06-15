@@ -2,10 +2,10 @@
     "version": "1.0.0",
     "port": 3000,
     "sqlConfig": {
-        "user": "NodeUser",
-        "password": "aiqu9ahuh9",
-        "database": "Terminator",
-        "server": "192.168.100.188",
+        "user": "username",
+        "password": "password",
+        "database": "database",
+        "server": "127.0.0.1",
         "options": {
             "encrypt": true,
             "trustServerCertificate": true
