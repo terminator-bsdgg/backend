@@ -1,19 +1,21 @@
+// Import modules
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const database = require('./../database');
 const tokenUtils = require('./../lib/tokenUtils');
 const eventUtils = require('./../lib/eventUtils');
 
-const router = express.Router();
+const router = express.Router(); // Create router for this route
 
 router.use((req, res, next) => {
-    next();
+    next(); // Forward to request
 });
 
 router.post('/list', body('userid').optional().isString(), body('room_id').optional().isNumeric(), (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Check if all fields are valid
 
     if (!errors.isEmpty()) {
+        // If the request is invalid, return a error
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -133,6 +135,7 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
                     return res.status(200).json(data);
                 })
                 .catch((selectError) => {
+                    // Add error if thrown to database and return error to user
                     eventUtils.addEvent('error', 'Error while selecting events', selectError);
                     return res.status(500).json({ error: 'Error while selecting from database' });
                 });
@@ -141,9 +144,10 @@ router.post('/list', body('userid').optional().isString(), body('room_id').optio
 });
 
 router.post('/list/pending', body('organisatorId').optional().isString(), (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Check if all fields are valid
 
     if (!errors.isEmpty()) {
+        // If the request is invalid, return a error
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -153,6 +157,7 @@ router.post('/list/pending', body('organisatorId').optional().isString(), (req, 
                 return res.status(200).json(result.recordset);
             })
             .catch((selectError) => {
+                // Add error if thrown to database and return error to user
                 console.log(selectError);
                 eventUtils.addEvent('error', 'Error while selecting events', selectError);
                 return res.status(500).json({ error: 'Error while selecting from database' });
@@ -161,9 +166,10 @@ router.post('/list/pending', body('organisatorId').optional().isString(), (req, 
 });
 
 router.post('/list/all', body('token').isString(), body('organisatorId').optional().isString(), (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Check if all fields are valid
 
     if (!errors.isEmpty()) {
+        // If the request is invalid, return a error
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -185,9 +191,10 @@ router.post('/list/all', body('token').isString(), body('organisatorId').optiona
 });
 
 router.post('/add', body('token').isString(), body('title').isString(), body('start').isInt(), body('end').isInt(), body('room_id').isNumeric(), body('showName').optional().isBoolean(), (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Check if all fields are valid
 
     if (!errors.isEmpty()) {
+        // If the request is invalid, return a error
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -209,6 +216,7 @@ router.post('/add', body('token').isString(), body('title').isString(), body('st
                                         return res.status(200).json({ success: true });
                                     })
                                     .catch((updateError) => {
+                                        // Add error if thrown to database and return error to user
                                         eventUtils.addEvent('error', 'Error while adding Calendar to database');
                                         return res.status(400).json({ error: 'data_error_adding_calendar' });
                                     });
@@ -218,11 +226,13 @@ router.post('/add', body('token').isString(), body('title').isString(), body('st
                             }
                         })
                         .catch((insertError) => {
+                            // Add error if thrown to database and return error to user
                             eventUtils.addEvent('error', 'Error while adding Calendar to database');
                             return res.status(400).json({ error: 'data_error_adding_calendar' });
                         });
                 })
                 .catch((selectError) => {
+                    // Add error if thrown to database and return error to user
                     eventUtils.addEvent('error', 'Error while reading Calendar from database');
                     return res.status(400).json({ error: 'data_error_reading_calendar' });
                 });
@@ -231,9 +241,10 @@ router.post('/add', body('token').isString(), body('title').isString(), body('st
 });
 
 router.post('/edit', body('token').isString(), body('accepted').isBoolean(), body('declinedReason').isString(), body('editor').isString(), (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Check if all fields are valid
 
     if (!errors.isEmpty()) {
+        // If the request is invalid, return a error
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -247,6 +258,7 @@ router.post('/edit', body('token').isString(), body('accepted').isBoolean(), bod
                     return res.status(200).json({ success: 'data_success_calendar_edited' });
                 })
                 .catch((updateError) => {
+                    // Add error if thrown to database and return error to user
                     eventUtils.addEvent('error', 'Error while updating Calendar in database');
                     return res.status(400).json({ error: 'data_error_updating_calendar' });
                 });
